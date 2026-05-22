@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface-hover: #243044;
+      --border: #2d3a4f;
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #3d9cf5;
+      --accent-soft: rgba(61, 156, 245, 0.15);
+      --danger: #f07178;
+      --success: #7fd962;
+      --radius: 12px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(61, 156, 245, 0.18), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(127, 217, 98, 0.06), transparent);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+
+    .wrap {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat span {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat strong {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.25rem;
+    }
+
+    form {
+      display: flex;
+      gap: 0.65rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]::placeholder { color: var(--muted); }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.25rem;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a1628;
+    }
+
+    .btn-primary:hover { filter: brightness(1.08); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      padding: 0.4rem 0.65rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-ghost:hover {
+      color: var(--danger);
+      background: rgba(240, 113, 120, 0.12);
+    }
+
+    .list-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+
+    .list-head h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    li .task-title {
+      font-weight: 500;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    li .task-id {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-right: 0.5rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .empty svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0.75rem;
+      opacity: 0.4;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.65rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      box-shadow: var(--shadow);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Task Manager</h1>
+      <p>Organizează sarcinile tale zilnice</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat">
+        <span>Total task-uri</span>
+        <strong id="count">0</strong>
+      </div>
+      <div class="stat">
+        <span>Status</span>
+        <strong id="status" style="font-size:1rem;color:var(--success)">Activ</strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <form id="addForm">
+        <input type="text" id="title" placeholder="Ce ai de făcut?" required autocomplete="off">
+        <button type="submit" class="btn btn-primary">Adaugă</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="list-head">
+        <h2>Lista ta</h2>
+      </div>
+      <ul id="list"></ul>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const toast = document.getElementById('toast');
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    async function load() {
+      const res = await fetch('/tasks');
+      const tasks = await res.json();
+      document.getElementById('count').textContent = tasks.length;
+      const ul = document.getElementById('list');
+      if (!tasks.length) {
+        ul.innerHTML = `
+          <li class="empty" style="border:none;background:transparent;flex-direction:column;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            Niciun task încă. Adaugă primul!
+          </li>`;
+        return;
+      }
+      ul.innerHTML = tasks.map(t => `
+        <li>
+          <span class="task-title"><span class="task-id">#${t.id}</span>${escapeHtml(t.title)}</span>
+          <button type="button" class="btn btn-ghost" data-id="${t.id}">Șterge</button>
+        </li>
+      `).join('');
+      ul.querySelectorAll('button[data-id]').forEach(btn => {
+        btn.onclick = async () => {
+          await fetch('/tasks/' + btn.dataset.id, { method: 'DELETE' });
+          showToast('Task șters');
+          load();
+        };
+      });
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    document.getElementById('addForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      if (!title) return;
+      const res = await fetch('/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title })
+      });
+      if (res.ok) {
+        document.getElementById('title').value = '';
+        showToast('Task adăugat');
+        load();
+      }
+    };
+
+    load();
+  </script>
+</body>
+</html>
