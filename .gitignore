@@ -1,0 +1,4 @@
+cloudrun.env
+posgres.txt
+__pycache__/
+*.pyc
