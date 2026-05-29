@@ -34,7 +34,6 @@ steps:
       - --platform=managed
       - --allow-unauthenticated
       - --port=8080
-      - --set-env-vars=DATABASE_URL=${_DATABASE_URL}
 
 options:
   logging: CLOUD_LOGGING_ONLY
